@@ -25,6 +25,7 @@ git push -u origin main
 
 // add tailwind dependencies
 
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 npm install tailwindcss-animate
 npm install @tailwindcss/typography
-npm install tailwindcss postcss autoprefixer
