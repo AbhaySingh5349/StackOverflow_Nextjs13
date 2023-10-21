@@ -1,0 +1,30 @@
+// basic next setup
+
+npx create-next-app@latest
+
+// run app
+
+npm run dev
+
+// ESLint standard configuration 
+
+npm install eslint-config-standard (update .eslintrc.json)
+npm install eslint-plugin-tailwindcss (organize classname logically to make code easier to read)
+npm install eslint-config-prettier (to avoid conflicts between prettier & eslint)
+npm install prettier (and update settings to integrate eslint & prettier with VS code: ctrl+shift+p => open settings json)
+npm run lint (to test eslint)
+
+// push code to github
+
+git init
+git add .
+git commit -m "added prettier and linting libraries"
+git branch -M main
+git remote add origin https://github.com/AbhaySingh5349/StackOverflow_Nextjs13.git
+git push -u origin main
+
+// add tailwind dependencies
+
+npm install tailwindcss-animate
+npm install @tailwindcss/typography
+npm install tailwindcss postcss autoprefixer
