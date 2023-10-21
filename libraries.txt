@@ -29,3 +29,9 @@ npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 npm install tailwindcss-animate
 npm install @tailwindcss/typography
+
+// clerk auth
+
+get API key and store in .env.logical
+npm install @clerk/nextjs
+add App Router and middleware code 
