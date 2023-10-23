@@ -13,18 +13,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState('');
 
   const handleThemeChange = () => {
-    if (mode === 'dark') {
-      //   setMode('light');
-      document.documentElement.classList.add('light');
-    } else {
-      //   setMode('dark');
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      setMode('dark');
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      setMode('light');
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
     }
   };
 
   useEffect(() => {
     handleThemeChange();
   }, [mode]);
+
+  console.log('theme: ', mode);
 
   return (
     <ThemeContext.Provider value={{ mode, setMode }}>
