@@ -24,13 +24,19 @@ import Image from 'next/image';
 
 import { QuestionSchema } from '@/lib/validations';
 import { createQuestion } from '@/lib/actions/question.actions';
+import { useRouter, usePathname } from 'next/navigation';
+
+interface Props {
+  userId: string;
+}
 
 const type: any = 'create';
 
-export const Question = () => {
+export const Question = ({ userId }: Props) => {
   const editorRef = useRef(null);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname(); // to know current URL
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
@@ -48,8 +54,15 @@ export const Question = () => {
 
     try {
       // async call to create question (contain form data)
-      await createQuestion({});
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(userId),
+      });
+
       // navigate to home page
+      router.push('/');
     } catch (err) {
     } finally {
       setIsSubmitting(false);
