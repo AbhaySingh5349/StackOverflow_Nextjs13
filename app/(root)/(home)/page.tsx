@@ -6,8 +6,9 @@ import { HomePageFilters } from '@/constants/filters';
 import HomeFilters from '@/components/home/HomeFilters';
 import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
+import { getQuestions } from '@/lib/actions/question.actions';
 
-const questions = [
+const dummy_questions = [
   {
     _id: '1',
     title: 'How to use express as custom server in NextJS ?',
@@ -93,7 +94,9 @@ const questions = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const result = await getQuestions({});
+  // console.log('get questions: ', result?.questions);
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -123,14 +126,14 @@ export default function Home() {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {questions.length === 0 ? (
+        {result?.questions.length === 0 ? (
           <NoResultFound
             title="There are no questions to display"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
         ) : (
-          questions.map((question) => {
+          result?.questions.map((question) => {
             return (
               <QuestionCard
                 key={question._id}

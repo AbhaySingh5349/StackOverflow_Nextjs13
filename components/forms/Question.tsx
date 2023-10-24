@@ -59,7 +59,10 @@ export const Question = ({ userId }: Props) => {
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(userId),
+        path: pathname,
       });
+
+      console.log('Pathname: ', pathname);
 
       // navigate to home page
       router.push('/');
