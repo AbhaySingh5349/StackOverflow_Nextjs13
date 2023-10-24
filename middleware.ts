@@ -6,7 +6,7 @@ import { authMiddleware } from '@clerk/nextjs';
 export default authMiddleware({
   publicRoutes: [
     '/',
-    '/pages/api',
+    '/api',
     'question/:id',
     '/tags',
     '/tags/:id',
@@ -14,7 +14,7 @@ export default authMiddleware({
     '/community',
     '/jobs',
   ],
-  ignoredRoutes: ['/pages/api', '/pages/api/chatgpt'],
+  ignoredRoutes: ['/api', '/api/chatgpt'],
 });
 
 export const config = {
