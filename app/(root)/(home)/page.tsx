@@ -6,8 +6,9 @@ import { HomePageFilters } from '@/constants/filters';
 import HomeFilters from '@/components/home/HomeFilters';
 import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
-// import { getQuestions } from '@/lib/actions/question.actions';
+import { getQuestions } from '@/lib/actions/question.actions';
 
+/*
 const dummyQuestions = [
   {
     _id: '1',
@@ -93,10 +94,11 @@ const dummyQuestions = [
     createdAt: new Date('2021-09-01T12:00:00.000Z'),
   },
 ];
+*/
 
 export default async function Home() {
-  // const result = await getQuestions({});
-  // console.log('get questions: ', result?.questions);
+  const result = await getQuestions({});
+  console.log('get questions: ', result?.questions);
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -126,14 +128,14 @@ export default async function Home() {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {dummyQuestions.length === 0 ? (
+        {result?.questions.length === 0 ? (
           <NoResultFound
             title="There are no questions to display"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
         ) : (
-          dummyQuestions.map((question) => {
+          result?.questions.map((question) => {
             return (
               <QuestionCard
                 key={question._id}
