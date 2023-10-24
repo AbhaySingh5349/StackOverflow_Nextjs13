@@ -7,7 +7,7 @@ import { Webhook } from 'svix';
 import { createUser, deleteUser, updateUser } from '@/lib/actions/user.action';
 import { NextResponse } from 'next/server';
 
-const webhookSecret: string = process.env.WEBHOOK_SECRET;
+// const webhookSecret: string = process.env.WEBHOOK_SECRET;
 
 type NextApiRequestWithSvixRequiredHeaders = NextApiRequest & {
   headers: IncomingHttpHeaders & WebhookRequiredHeaders;
@@ -20,7 +20,7 @@ export default async function handler(
   const payload = JSON.stringify(req.body);
   const headers = req.headers;
   // Create a new Webhook instance with your webhook secret
-  const wh = new Webhook(webhookSecret!);
+  const wh = new Webhook('webhookSecret!');
 
   let evt: WebhookEvent;
   try {

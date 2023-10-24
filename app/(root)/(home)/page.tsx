@@ -8,91 +8,91 @@ import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
 import { getQuestions } from '@/lib/actions/question.actions';
 
-const dummy_questions = [
-  {
-    _id: '1',
-    title: 'How to use express as custom server in NextJS ?',
-    tags: [
-      { _id: '1', name: 'next' },
-      { _id: '2', name: 'express' },
-    ],
-    author: {
-      _id: '1',
-      name: 'abhay',
-      picture: 'abhay.jpg',
-    },
-    upvotes: 10,
-    views: 1420,
-    answers: [],
-    createdAt: new Date('2023-10-23T12:00:00.000Z'),
-  },
-  {
-    _id: '2',
-    title: 'Cascading deletes in SQLAlchemy ?',
-    tags: [{ _id: '1', name: 'SQLAlchemy' }],
-    author: {
-      _id: '2',
-      name: 'aayush',
-      picture: 'aayush.jpg',
-    },
-    upvotes: 5,
-    views: 80,
-    answers: [],
-    createdAt: new Date('2021-09-01T12:00:00.000Z'),
-  },
-  {
-    _id: '3',
-    title:
-      'Roadmap for web development with nextjs, mobile development, machine learning, blockchain development ?',
-    tags: [
-      { _id: '1', name: 'web dev' },
-      { _id: '2', name: 'next' },
-      { _id: '3', name: 'mobile dev' },
-      { _id: '4', name: 'machine learning' },
-      { _id: '5', name: 'blockchain dev' },
-    ],
-    author: {
-      _id: '3',
-      name: 'aakash',
-      picture: 'aakash.jpg',
-    },
-    upvotes: 12,
-    views: 150,
-    answers: [],
-    createdAt: new Date('2021-09-01T12:00:00.000Z'),
-  },
-  {
-    _id: '4',
-    title: 'How to master DSA ?',
-    tags: [{ _id: '1', name: 'DSA' }],
-    author: {
-      _id: '1',
-      name: 'abhay',
-      picture: 'abhay.jpg',
-    },
-    upvotes: 15,
-    views: 200,
-    answers: [],
-    createdAt: new Date('2021-09-01T12:00:00.000Z'),
-  },
-  {
-    _id: '5',
-    title: 'How to crack MAANG interviews ?',
-    tags: [
-      { _id: '1', name: 'interviews' },
-      { _id: '2', name: 'MAANG' },
-    ],
-    author: {
-      _id: '4',
-      name: 'kushagra',
-      picture: 'kushagra.jpg',
-    },
-    upvotes: 12,
-    views: 400,
-    answers: [],
-    createdAt: new Date('2021-09-01T12:00:00.000Z'),
-  },
-];
+// const dummy_questions = [
+//   {
+//     _id: '1',
+//     title: 'How to use express as custom server in NextJS ?',
+//     tags: [
+//       { _id: '1', name: 'next' },
+//       { _id: '2', name: 'express' },
+//     ],
+//     author: {
+//       _id: '1',
+//       name: 'abhay',
+//       picture: 'abhay.jpg',
+//     },
+//     upvotes: 10,
+//     views: 1420,
+//     answers: [],
+//     createdAt: new Date('2023-10-23T12:00:00.000Z'),
+//   },
+//   {
+//     _id: '2',
+//     title: 'Cascading deletes in SQLAlchemy ?',
+//     tags: [{ _id: '1', name: 'SQLAlchemy' }],
+//     author: {
+//       _id: '2',
+//       name: 'aayush',
+//       picture: 'aayush.jpg',
+//     },
+//     upvotes: 5,
+//     views: 80,
+//     answers: [],
+//     createdAt: new Date('2021-09-01T12:00:00.000Z'),
+//   },
+//   {
+//     _id: '3',
+//     title:
+//       'Roadmap for web development with nextjs, mobile development, machine learning, blockchain development ?',
+//     tags: [
+//       { _id: '1', name: 'web dev' },
+//       { _id: '2', name: 'next' },
+//       { _id: '3', name: 'mobile dev' },
+//       { _id: '4', name: 'machine learning' },
+//       { _id: '5', name: 'blockchain dev' },
+//     ],
+//     author: {
+//       _id: '3',
+//       name: 'aakash',
+//       picture: 'aakash.jpg',
+//     },
+//     upvotes: 12,
+//     views: 150,
+//     answers: [],
+//     createdAt: new Date('2021-09-01T12:00:00.000Z'),
+//   },
+//   {
+//     _id: '4',
+//     title: 'How to master DSA ?',
+//     tags: [{ _id: '1', name: 'DSA' }],
+//     author: {
+//       _id: '1',
+//       name: 'abhay',
+//       picture: 'abhay.jpg',
+//     },
+//     upvotes: 15,
+//     views: 200,
+//     answers: [],
+//     createdAt: new Date('2021-09-01T12:00:00.000Z'),
+//   },
+//   {
+//     _id: '5',
+//     title: 'How to crack MAANG interviews ?',
+//     tags: [
+//       { _id: '1', name: 'interviews' },
+//       { _id: '2', name: 'MAANG' },
+//     ],
+//     author: {
+//       _id: '4',
+//       name: 'kushagra',
+//       picture: 'kushagra.jpg',
+//     },
+//     upvotes: 12,
+//     views: 400,
+//     answers: [],
+//     createdAt: new Date('2021-09-01T12:00:00.000Z'),
+//   },
+// ];
 
 export default async function Home() {
   const result = await getQuestions({});
