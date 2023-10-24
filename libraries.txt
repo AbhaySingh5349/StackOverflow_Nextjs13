@@ -55,3 +55,7 @@ npm install --save @tinymce/tinymce-react
 
 update next.config.js
 npm install mongoose mongodb
+
+// sync clerk data & user database using webhooks
+
+npm install svix
