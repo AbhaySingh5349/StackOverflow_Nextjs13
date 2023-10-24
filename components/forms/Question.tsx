@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
 import { QuestionSchema } from '@/lib/validations';
+import { createQuestion } from '@/lib/actions/question.actions';
 
 const type: any = 'create';
 
@@ -42,11 +43,12 @@ export const Question = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true);
 
     try {
       // async call to create question (contain form data)
+      await createQuestion({});
       // navigate to home page
     } catch (err) {
     } finally {
@@ -136,6 +138,8 @@ export const Question = () => {
                     // @ts-ignore
                     editorRef.current = editor;
                   }}
+                  onBlur={field.onBlur}
+                  onEditorChange={(content) => field.onChange(content)}
                   initialValue=""
                   init={{
                     height: 500,

@@ -50,3 +50,8 @@ npx shadcn-ui@latest add form
 // Tiny MCE editor for asking questions
 
 npm install --save @tinymce/tinymce-react
+
+// backend
+
+update next.config.js
+npm install mongoose mongodb
