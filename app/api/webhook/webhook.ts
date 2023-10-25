@@ -73,4 +73,6 @@ export default async function handler(
 
     return NextResponse.json({ message: 'OK', user: deletedUser });
   }
+
+  return new Response('', { status: 201 });
 }
