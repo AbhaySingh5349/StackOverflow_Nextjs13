@@ -6,6 +6,7 @@ import { connectToDB } from '../mongoose';
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from './shared.types';
 import { Question } from '@/database/question.model';
@@ -78,3 +79,28 @@ export const deleteUser = async (params: DeleteUserParams) => {
     throw new Error(`error in deleting user: ${err}`);
   }
 };
+
+export const getAllUsers = async (params: GetAllUsersParams) => {
+  try {
+    await connectToDB();
+
+    // const { page = 1, pageSize = 10, filter, searchQuery } = params;
+
+    const users = await User.find({}).sort({ createdAt: -1 });
+
+    return { users };
+  } catch (err) {
+    console.log('error in retrieving users: ', err);
+    throw new Error(`error in retrieving users: ${err}`);
+  }
+};
+
+/*
+export const getAllUsers = async (params: GetAllUsersParams) => {
+  try{
+    await connectToDB();
+  }catch(err){
+    
+  }
+}
+*/

@@ -70,7 +70,6 @@ export const Question = ({ userId }: Props) => {
     } finally {
       setIsSubmitting(false);
     }
-    console.log(values);
   }
 
   const handleInputKeyDown = (
