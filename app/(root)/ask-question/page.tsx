@@ -5,12 +5,12 @@ import { redirect } from 'next/navigation';
 import React from 'react';
 
 const Page = async () => {
-  const { userId } = auth();
+  const { userId: clerkId } = auth();
   // const userId = 'clerk123';
 
-  if (!userId) redirect('/sign-in');
+  if (!clerkId) redirect('/sign-in');
 
-  const user = await getUserById({ userId });
+  const user = await getUserById({ clerkId });
   console.log('ask-question user: ', user);
 
   return (

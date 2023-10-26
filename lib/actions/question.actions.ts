@@ -5,7 +5,11 @@ import { Tag } from '@/database/tag.model';
 import { User } from '@/database/user.model';
 import { revalidatePath } from 'next/cache';
 import { connectToDB } from '../mongoose';
-import { CreateQuestionParams, GetQuestionsParams } from './shared.types';
+import {
+  CreateQuestionParams,
+  GetQuestionByIdParams,
+  GetQuestionsParams,
+} from './shared.types';
 
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
@@ -20,6 +24,27 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   } catch (err) {
     console.log('error in fetching questions: ', err);
     throw new Error(`error in fetching questions: ${err}`);
+  }
+};
+
+export const getQuestionById = async (params: GetQuestionByIdParams) => {
+  try {
+    await connectToDB();
+
+    const { questionId } = params;
+
+    const question = await Question.findById(questionId)
+      .populate({ path: 'tags', model: Tag, select: '_id name' })
+      .populate({
+        path: 'author',
+        model: User,
+        select: '_id clerkId name picture',
+      });
+
+    return question;
+  } catch (err) {
+    console.log('error in fetching question details: ', err);
+    throw new Error(`error in fetching question details: ${err}`);
   }
 };
 

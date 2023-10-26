@@ -15,9 +15,9 @@ export const getUserById = async (params: any) => {
   try {
     await connectToDB();
 
-    const { userId } = params;
+    const { clerkId } = params;
 
-    const user = User.findOne({ clerkId: userId });
+    const user = User.findOne({ clerkId });
     return user;
   } catch (err) {
     console.log('error in retrieving user: ', err);

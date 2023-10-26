@@ -25,6 +25,7 @@ import Image from 'next/image';
 import { QuestionSchema } from '@/lib/validations';
 import { createQuestion } from '@/lib/actions/question.actions';
 import { useRouter, usePathname } from 'next/navigation';
+import { useTheme } from '@/context/ThemeProvider';
 
 interface Props {
   userId: string;
@@ -33,6 +34,7 @@ interface Props {
 const type: any = 'create';
 
 export const Question = ({ userId }: Props) => {
+  const { mode } = useTheme();
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -49,7 +51,7 @@ export const Question = ({ userId }: Props) => {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof QuestionSchema>) {
+  async function handleCreateQuestion(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true);
 
     try {
@@ -68,7 +70,7 @@ export const Question = ({ userId }: Props) => {
       router.push('/');
     } catch (err) {
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // either error or successfull creation of question
     }
   }
 
@@ -111,7 +113,7 @@ export const Question = ({ userId }: Props) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleCreateQuestion)}
         className="flex w-full flex-col gap-10"
       >
         <FormField
@@ -185,6 +187,8 @@ export const Question = ({ userId }: Props) => {
                       'alignright alignjustify | bullist numlist | ',
                     content_style:
                       'body { font-family:Inter,sans-serif; font-size:16px }',
+                    skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                    content_css: mode === 'dark' ? 'dark' : 'light',
                   }}
                 />
               </FormControl>

@@ -59,3 +59,8 @@ npm install mongoose mongodb
 // sync clerk data & user database using webhooks
 
 npm install svix
+
+// code parsing
+
+npm install html-react-parser (pasring HTML, can be used for markdown)
+npm install prismjs (for code content)
