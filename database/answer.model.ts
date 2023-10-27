@@ -1,7 +1,7 @@
 import { Schema, model, models, Document } from 'mongoose';
 
 export interface AnswerInterface extends Document {
-  userId: Schema.Types.ObjectId;
+  author: Schema.Types.ObjectId;
   questionId: Schema.Types.ObjectId;
   content: string;
   upvotes: Schema.Types.ObjectId[];
@@ -10,7 +10,7 @@ export interface AnswerInterface extends Document {
 }
 
 const AnswerSchema = new Schema<AnswerInterface>({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   questionId: { type: Schema.Types.ObjectId, ref: 'Question', required: true },
   content: { type: String, required: true },
   upvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],

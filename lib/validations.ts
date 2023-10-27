@@ -18,5 +18,5 @@ export const QuestionSchema = z.object({
 });
 
 export const AnswerSchema = z.object({
-  answer: z.string().min(5),
+  answer: z.string().min(5, 'Answer needs to be at least 5 characters'),
 });

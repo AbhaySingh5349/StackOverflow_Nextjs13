@@ -9,6 +9,8 @@ import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
 import Answer from '@/components/forms/Answer';
 import { getUserById } from '@/lib/actions/user.action';
+import AllAnswers from '@/components/shared/AllAnswers';
+import Votes from '@/components/shared/Votes';
 
 const Page = async ({ params }) => {
   const { userId: clerkId } = auth();
@@ -20,7 +22,7 @@ const Page = async ({ params }) => {
   return (
     <>
       <div className="flex-start w-full flex-col">
-        <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center sm:gap-2">
+        <div className="flex w-full flex-col justify-between max-md:justify-start max-md:gap-8 max-sm:items-start max-sm:gap-4 sm:flex-row sm:items-center">
           <Link
             href={`/profile/${question.author.clerkId}`}
             className="flex items-center justify-start gap-1"
@@ -36,7 +38,18 @@ const Page = async ({ params }) => {
               {question.author.name}
             </p>
           </Link>
-          <div className="flex justify-end">VOTING</div>
+          <div className="flex justify-end">
+            <Votes
+              type="question"
+              itemId={JSON.stringify(question._id)}
+              userId={JSON.stringify(user._id)}
+              upvotes={question.upvotes.length}
+              hasUpVoted={question.upvotes.includes(user._id)}
+              downvotes={question.downvotes.length}
+              hasDownVoted={question.downvotes.includes(user._id)}
+              hasSaved={user?.saved.includes(question._id)}
+            />
+          </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-4 w-full text-left">
           {question.title}
@@ -81,6 +94,12 @@ const Page = async ({ params }) => {
           );
         })}
       </div>
+
+      <AllAnswers
+        questionId={question._id}
+        userId={user._id}
+        totalAnswers={question.answers.length}
+      />
 
       <Answer
         question={question.content}
