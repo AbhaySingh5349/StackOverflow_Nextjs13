@@ -206,7 +206,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       options: { sort: { createdAt: -1 } },
       populate: [
         { path: 'tags', model: Tag, select: '_id name' },
-        { path: 'author', model: User, select: '_id clerkId' },
+        { path: 'author', model: User, select: '_id clerkId name picture' },
       ],
     });
 
