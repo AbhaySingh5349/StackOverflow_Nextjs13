@@ -9,8 +9,12 @@ import {
   CreateQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
+  GetSavedQuestionsParams,
   QuestionVoteParams,
+  ToggleSaveQuestionParams,
 } from './shared.types';
+
+import { FilterQuery } from 'mongoose';
 
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
@@ -150,5 +154,69 @@ export const downVoteQuestion = async (params: QuestionVoteParams) => {
   } catch (err) {
     console.log('error in downVoting question: ', err);
     throw new Error(`error in downVoting question: ${err}`);
+  }
+};
+
+export const toggleSaveQuestion = async (params: ToggleSaveQuestionParams) => {
+  try {
+    await connectToDB();
+
+    const { userId, questionId, path } = params;
+
+    const user = await User.findById(userId);
+
+    if (!user) throw new Error('user not found');
+
+    const isQuestionSaved = user.saved.includes(questionId);
+
+    if (isQuestionSaved) {
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { saved: questionId } },
+        { new: true }
+      );
+    } else {
+      await User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { saved: questionId } },
+        { new: true }
+      );
+    }
+
+    revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
+  } catch (err) {
+    console.log('error in saving question: ', err);
+    throw new Error(`error in saving question: ${err}`);
+  }
+};
+
+export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
+  try {
+    await connectToDB();
+
+    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? { title: { $regex: new RegExp(searchQuery, 'i') } }
+      : {};
+
+    const user = await User.findOne({ clerkId }).populate({
+      path: 'saved',
+      match: query,
+      options: { sort: { createdAt: -1 } },
+      populate: [
+        { path: 'tags', model: Tag, select: '_id name' },
+        { path: 'author', model: User, select: '_id clerkId' },
+      ],
+    });
+
+    if (!user) throw new Error('user not found');
+
+    const savedQuestions = user.saved;
+
+    return { questions: savedQuestions };
+  } catch (err) {
+    console.log('error in retrieving saved questions: ', err);
+    throw new Error(`error in retrieving saved questions: ${err}`);
   }
 };

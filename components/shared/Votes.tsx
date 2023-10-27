@@ -3,13 +3,15 @@
 
 import {
   downVoteQuestion,
+  toggleSaveQuestion,
   upVoteQuestion,
 } from '@/lib/actions/question.actions';
 import { formatNumberWithExtension } from '@/lib/utils';
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { downVoteAnswer, upVoteAnswer } from '@/lib/actions/answer.action';
+import { viewQuestion } from '@/lib/actions/interaction.action';
 
 interface Props {
   type: string;
@@ -35,7 +37,13 @@ const Votes = async ({
   // const router = useRouter();
   const pathname = usePathname(); // to know current URL
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    await toggleSaveQuestion({
+      userId: JSON.parse(userId),
+      questionId: JSON.parse(itemId),
+      path: pathname,
+    });
+  };
 
   const handleVote = async (action: string) => {
     if (!userId) return;
@@ -82,6 +90,15 @@ const Votes = async ({
       // show toast
     }
   };
+
+  useEffect(() => {
+    viewQuestion({
+      questionId: JSON.parse(itemId),
+      userId: userId ? JSON.parse(userId) : undefined,
+    });
+
+    // alert('viewed');
+  }, [itemId, userId]);
 
   return (
     <div className="flex gap-4">
