@@ -5,11 +5,11 @@ import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
 import { getSavedQuestions } from '@/lib/actions/question.actions';
 import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 
 export default async function Home() {
   const { userId: clerkId } = auth();
-
-  if (!clerkId) return null;
+  if (!clerkId) redirect('/sign-in');
 
   const { questions } = await getSavedQuestions({ clerkId });
 

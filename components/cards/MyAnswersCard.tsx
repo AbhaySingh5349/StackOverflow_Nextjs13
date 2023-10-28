@@ -2,6 +2,8 @@ import { formatNumberWithExtension, getTimeStamp } from '@/lib/utils';
 import Link from 'next/link';
 import React from 'react';
 import Metric from '../shared/Metric';
+import { SignedIn } from '@clerk/nextjs';
+import EditDeteleActions from '../shared/EditDeteleActions';
 
 interface Props {
   clerkId?: string;
@@ -25,6 +27,8 @@ const MyAnswersCard = ({
   upvotes,
   createdAt,
 }: Props) => {
+  const showActionBtns = clerkId === author.clerkId;
+
   return (
     <div className="card-wrapper rounded-[10px] p-6 sm:px-10">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -38,6 +42,12 @@ const MyAnswersCard = ({
             </h3>
           </Link>
         </div>
+        {/* allow edit/delete answer if signed in */}
+        <SignedIn>
+          {showActionBtns && (
+            <EditDeteleActions type="answer" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">

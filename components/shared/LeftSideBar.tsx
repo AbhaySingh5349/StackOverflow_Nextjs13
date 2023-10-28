@@ -3,13 +3,15 @@
 import { sidebarLinks } from '@/constants';
 import Link from 'next/link';
 import React from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, redirect } from 'next/navigation';
 import Image from 'next/image';
 import { SignedOut, useAuth } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 
 const LeftSideBar = () => {
   const { userId: clerkId } = useAuth();
+  if (!clerkId) redirect('/sign-in');
+
   const pathname = usePathname();
 
   return (

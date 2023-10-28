@@ -23,30 +23,34 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
 import { QuestionSchema } from '@/lib/validations';
-import { createQuestion } from '@/lib/actions/question.actions';
+import { createQuestion, editQuestion } from '@/lib/actions/question.actions';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeProvider';
 
 interface Props {
+  type?: string;
   userId: string;
+  questionDetails?: string;
 }
 
-const type: any = 'create';
-
-export const Question = ({ userId }: Props) => {
+export const Question = ({ type, userId, questionDetails }: Props) => {
   const { mode } = useTheme();
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const pathname = usePathname(); // to know current URL
 
+  const parsedQuestionDetails = JSON.parse(questionDetails || '');
+
+  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: '',
-      explanation: '',
-      tags: [],
+      title: parsedQuestionDetails?.title || '',
+      explanation: parsedQuestionDetails?.content || '',
+      tags: groupedTags || [],
     },
   });
 
@@ -55,19 +59,29 @@ export const Question = ({ userId }: Props) => {
     setIsSubmitting(true);
 
     try {
-      // async call to create question (contain form data)
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(userId),
-        path: pathname!,
-      });
+      if (type === 'edit') {
+        await editQuestion({
+          questionId: parsedQuestionDetails._id,
+          title: values.title,
+          content: values.title,
+          path: pathname,
+        });
+        router.push(`/question/${parsedQuestionDetails._id}`);
+      } else {
+        // async call to create question (contain form data)
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(userId),
+          path: pathname!,
+        });
 
-      // console.log('Pathname: ', pathname);
+        // console.log('Pathname: ', pathname);
 
-      // navigate to home page
-      router.push('/');
+        // navigate to home page
+        router.push('/');
+      }
     } catch (err) {
     } finally {
       setIsSubmitting(false); // either error or successfull creation of question
@@ -157,7 +171,7 @@ export const Question = ({ userId }: Props) => {
                   }}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue=""
+                  initialValue={parsedQuestionDetails?.content || ''}
                   init={{
                     height: 500,
                     menubar: false,
@@ -213,6 +227,7 @@ export const Question = ({ userId }: Props) => {
                   <Input
                     className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 min-h-[56px]"
                     placeholder="add tags..."
+                    disabled={type === 'edit'}
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
                   />
                   {field.value.length > 0 && (
@@ -222,16 +237,22 @@ export const Question = ({ userId }: Props) => {
                           <Badge
                             key={tag}
                             className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center gap-2 rounded-md border-none px-4 py-2"
-                            onClick={() => handleTagRemove(tag, field)}
+                            onClick={
+                              type !== 'edit'
+                                ? () => handleTagRemove(tag, field)
+                                : () => {}
+                            }
                           >
                             {tag}
-                            <Image
-                              src="/assets/icons/close.svg"
-                              alt="close icon"
-                              width={12}
-                              height={12}
-                              className="cursor-pointer object-contain invert-0 dark:invert"
-                            />
+                            {type !== 'edit' && (
+                              <Image
+                                src="/assets/icons/close.svg"
+                                alt="close icon"
+                                width={12}
+                                height={12}
+                                className="cursor-pointer object-contain invert-0 dark:invert"
+                              />
+                            )}
                           </Badge>
                         );
                       })}
@@ -254,7 +275,7 @@ export const Question = ({ userId }: Props) => {
           {isSubmitting ? (
             <> {type === 'edit' ? 'Editing...' : 'Posting...'} </>
           ) : (
-            <> {type === 'edit' ? 'Edit Question' : 'Submit Question'} </>
+            <> {type === 'edit' ? 'Edit Question' : 'Ask Question'} </>
           )}
         </Button>
       </form>

@@ -6,8 +6,6 @@ import React from 'react';
 
 const Page = async () => {
   const { userId: clerkId } = auth();
-  // const userId = 'clerk123';
-
   if (!clerkId) redirect('/sign-in');
 
   const user = await getUserById({ clerkId });

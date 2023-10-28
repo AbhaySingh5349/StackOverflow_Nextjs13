@@ -8,8 +8,10 @@ import { connectToDB } from '../mongoose';
 import {
   AnswerVoteParams,
   CreateAnswerParams,
+  DeleteAnswerParams,
   GetAnswersParams,
 } from './shared.types';
+import { Interaction } from '@/database/interaction.model';
 
 export const createAnswer = async (params: CreateAnswerParams) => {
   try {
@@ -121,5 +123,29 @@ export const downVoteAnswer = async (params: AnswerVoteParams) => {
   } catch (err) {
     console.log('error in downVoting answer: ', err);
     throw new Error(`error in downVoting answer: ${err}`);
+  }
+};
+
+export const deleteAnswer = async (params: DeleteAnswerParams) => {
+  try {
+    await connectToDB();
+
+    const { answerId, path } = params;
+
+    const answer = await Answer.findById(answerId);
+
+    if (!answer) throw new Error('Answer not found');
+
+    await Answer.deleteOne({ _id: answerId });
+    await Question.updateOne(
+      { _id: answer.questionId },
+      { $pull: { answers: answerId } }
+    );
+    await Interaction.deleteMany({ answerId });
+
+    revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
+  } catch (err) {
+    console.log('error in deleting question: ', err);
+    throw new Error(`error in deleting question: ${err}`);
   }
 };

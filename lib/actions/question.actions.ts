@@ -7,6 +7,8 @@ import { revalidatePath } from 'next/cache';
 import { connectToDB } from '../mongoose';
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   GetSavedQuestionsParams,
@@ -15,6 +17,8 @@ import {
 } from './shared.types';
 
 import { FilterQuery } from 'mongoose';
+import { Answer } from '@/database/answer.model';
+import { Interaction } from '@/database/interaction.model';
 
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
@@ -218,5 +222,52 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
   } catch (err) {
     console.log('error in retrieving saved questions: ', err);
     throw new Error(`error in retrieving saved questions: ${err}`);
+  }
+};
+
+export const deleteQuestion = async (params: DeleteQuestionParams) => {
+  try {
+    await connectToDB();
+
+    const { questionId, path } = params;
+
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ questionId });
+    await Interaction.deleteMany({ questionId });
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } },
+      { new: true }
+    );
+
+    revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
+  } catch (err) {
+    console.log('error in deleting question: ', err);
+    throw new Error(`error in deleting question: ${err}`);
+  }
+};
+
+export const editQuestion = async (params: EditQuestionParams) => {
+  try {
+    await connectToDB();
+
+    const { questionId, title, content, path } = params;
+
+    const question = await Question.findById(questionId).populate({
+      path: 'tags',
+      model: Tag,
+    });
+
+    if (!question) throw new Error('Question not found');
+
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+
+    revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
+  } catch (err) {
+    console.log('error in deleting question: ', err);
+    throw new Error(`error in deleting question: ${err}`);
   }
 };
