@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const getTimeStamp = (createdAt: Date): string => {
   const now = new Date();
-  const diff = Math.abs(now.getTime() - createdAt.getTime());
+  const diff = Math.abs(now.getTime() - createdAt?.getTime());
 
   const minute = 60 * 1000;
   const hour = minute * 60;
@@ -42,6 +42,12 @@ export const formatNumberWithExtension = (number: number): string => {
   } else if (number >= 1000) {
     return (number / 1000).toFixed(1) + 'K';
   } else {
-    return number.toString();
+    return number?.toString();
   }
+};
+
+export const getJoinedDate = (date: Date): string => {
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+  return `${month} ${year}`;
 };

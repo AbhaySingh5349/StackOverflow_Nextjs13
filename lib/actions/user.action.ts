@@ -7,17 +7,25 @@ import {
   CreateUserParams,
   DeleteUserParams,
   GetAllUsersParams,
+  GetUserByIdParams,
+  GetUserStatsParams,
   UpdateUserParams,
 } from './shared.types';
 import { Question } from '@/database/question.model';
+import { Error } from 'mongoose';
+import { Answer } from '@/database/answer.model';
+import { Tag } from '@/database/tag.model';
 
-export const getUserById = async (params: any) => {
+export const getUserById = async (params: GetUserByIdParams) => {
   try {
     await connectToDB();
 
     const { clerkId } = params;
 
     const user = User.findOne({ clerkId });
+
+    if (!user) throw new Error('User not found');
+
     return user;
   } catch (err) {
     console.log('error in retrieving user: ', err);
@@ -93,6 +101,65 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
     console.log('error in retrieving users: ', err);
     throw new Error(`error in retrieving users: ${err}`);
   }
+};
+
+export const getUserInfo = async (params: GetUserByIdParams) => {
+  try {
+    await connectToDB();
+
+    const { clerkId } = params;
+    const user = await User.findOne({ clerkId });
+
+    if (!user) throw new Error('User not found');
+
+    const questionsCount = await Question.countDocuments({ author: user._id });
+    const answersCount = await Answer.countDocuments({ author: user._id });
+
+    return { user, questionsCount, answersCount };
+  } catch (err) {}
+};
+
+export const getUserQuestions = async (params: GetUserStatsParams) => {
+  try {
+    await connectToDB();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const questions = await Question.find({ author: userId })
+      .sort({
+        views: -1,
+        upvotes: -1,
+      })
+      .populate([
+        { path: 'tags', model: Tag, select: '_id name' },
+        { path: 'author', model: User, select: '_id clerkId name picture' },
+      ]);
+
+    const questionsCount = await Question.countDocuments({ author: userId });
+
+    return { questions, questionsCount };
+  } catch (err) {}
+};
+
+export const getUserAnswers = async (params: GetUserStatsParams) => {
+  try {
+    await connectToDB();
+
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    const answers = await Answer.find({ author: userId })
+      .sort({
+        upvotes: -1,
+      })
+      .populate([
+        { path: 'questionId', model: Question, select: '_id title' },
+        { path: 'author', model: User, select: '_id clerkId name picture' },
+      ]);
+
+    const answersCount = await Answer.countDocuments({ author: userId });
+
+    return { answers, answersCount };
+  } catch (err) {}
 };
 
 /*

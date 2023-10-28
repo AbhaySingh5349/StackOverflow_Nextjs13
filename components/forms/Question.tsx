@@ -254,7 +254,7 @@ export const Question = ({ userId }: Props) => {
           {isSubmitting ? (
             <> {type === 'edit' ? 'Editing...' : 'Posting...'} </>
           ) : (
-            <> {type === 'edit' ? 'Edit Question' : 'Ask a Question'} </>
+            <> {type === 'edit' ? 'Edit Question' : 'Submit Question'} </>
           )}
         </Button>
       </form>
