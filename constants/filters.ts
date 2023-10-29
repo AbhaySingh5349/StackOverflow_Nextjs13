@@ -6,17 +6,17 @@ export const AnswerFilters = [
 ];
 
 export const UserFilters = [
-  { name: 'New Users', value: 'new_users' },
-  { name: 'Old Users', value: 'old_users' },
-  { name: 'Top Contributors', value: 'top_contributors' },
+  { name: 'New Users', value: 'newUsers' },
+  { name: 'Old Users', value: 'oldUsers' },
+  { name: 'Top Contributors', value: 'topContributors' },
 ];
 
 export const QuestionFilters = [
-  { name: 'Most Recent', value: 'most_recent' },
+  { name: 'Most Recent', value: 'mostRecent' },
   { name: 'Oldest', value: 'oldest' },
-  { name: 'Most Voted', value: 'most_voted' },
-  { name: 'Most Viewed', value: 'most_viewed' },
-  { name: 'Most Answered', value: 'most_answered' },
+  { name: 'Most Voted', value: 'mostVoted' },
+  { name: 'Most Viewed', value: 'mostViewed' },
+  { name: 'Most Answered', value: 'mostAnswered' },
 ];
 
 export const TagFilters = [

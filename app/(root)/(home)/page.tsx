@@ -98,7 +98,10 @@ const dummyQuestions = [
 */
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({ searchQuery: searchParams.q });
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
   // console.log('get questions: ', result?.questions);
   return (
     <>

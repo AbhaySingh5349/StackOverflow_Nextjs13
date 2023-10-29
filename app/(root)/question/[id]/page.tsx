@@ -12,8 +12,9 @@ import { getUserById } from '@/lib/actions/user.action';
 import AllAnswers from '@/components/shared/AllAnswers';
 import Votes from '@/components/shared/Votes';
 import { redirect } from 'next/navigation';
+import { URLProps } from '@/types';
 
-const Page = async ({ params }) => {
+const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
   if (!clerkId) redirect('/sign-in');
 
@@ -101,6 +102,8 @@ const Page = async ({ params }) => {
         questionId={question._id}
         userId={user._id}
         totalAnswers={question.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
 
       <Answer

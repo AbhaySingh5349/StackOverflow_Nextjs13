@@ -9,7 +9,7 @@ interface Props {
   userId: string;
   totalAnswers: number;
   page?: number;
-  filter?: number;
+  filter?: string;
 }
 
 const AllAnswers = async ({
@@ -19,7 +19,11 @@ const AllAnswers = async ({
   page,
   filter,
 }: Props) => {
-  const answers = await getAnswers({ questionId });
+  const answers = await getAnswers({
+    questionId,
+    page: page ? +page : 1,
+    filter,
+  });
 
   return (
     <div className="mt-8">

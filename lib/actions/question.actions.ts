@@ -24,7 +24,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     await connectToDB();
 
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -35,10 +35,28 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       ];
     }
 
+    let sortOptions = {};
+
+    switch (filter) {
+      case 'newest':
+        sortOptions = { createdAt: -1 };
+        break;
+      case 'recommended':
+        break;
+      case 'frequent':
+        sortOptions = { views: -1 };
+        break;
+      case 'unanswered':
+        query.answers = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
     const questions = await Question.find(query)
       .populate({ path: 'tags', model: Tag }) // to get all info about tags (as we stored only ID in questions collection)
       .populate({ path: 'author', model: User }) // to get all info about author (as we stored only ID in questions collection)
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return { questions };
   } catch (err) {
@@ -215,10 +233,32 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       ? { title: { $regex: new RegExp(searchQuery, 'i') } }
       : {};
 
+    let sortOptions = { createdAt: -1 };
+
+    switch (filter) {
+      case 'mostRecent':
+        sortOptions = { createdAt: -1 };
+        break;
+      case 'oldest':
+        sortOptions = { createdAt: 1 };
+        break;
+      case 'mostVoted':
+        sortOptions = { upvotes: -1 };
+        break;
+      case 'mostViewed':
+        sortOptions = { views: -1 };
+        break;
+      case 'mostAnswered':
+        sortOptions = { answers: -1 };
+        break;
+      default:
+        break;
+    }
+
     const user = await User.findOne({ clerkId }).populate({
       path: 'saved',
       match: query,
-      options: { sort: { createdAt: -1 } },
+      options: { sort: sortOptions },
       populate: [
         { path: 'tags', model: Tag, select: '_id name' },
         { path: 'author', model: User, select: '_id clerkId name picture' },

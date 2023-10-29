@@ -41,7 +41,26 @@ export const getAnswers = async (params: GetAnswersParams) => {
   try {
     await connectToDB();
 
-    const { questionId } = params;
+    const { questionId, page, filter } = params;
+
+    let sortOptions = { createdAt: -1 };
+
+    switch (filter) {
+      case 'highestUpvotes':
+        sortOptions = { upvotes: -1 };
+        break;
+      case 'lowestUpvotes':
+        sortOptions = { upvotes: 1 };
+        break;
+      case 'recent':
+        sortOptions = { createdAt: -1 };
+        break;
+      case 'old':
+        sortOptions = { createdAt: 1 };
+        break;
+      default:
+        break;
+    }
 
     const answers = await Answer.find({ questionId })
       .populate({
@@ -49,7 +68,7 @@ export const getAnswers = async (params: GetAnswersParams) => {
         model: User,
         select: '_id clerkId name picture',
       })
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return answers;
   } catch (err) {

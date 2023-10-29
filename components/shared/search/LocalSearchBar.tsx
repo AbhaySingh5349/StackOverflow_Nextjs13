@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { constructUrlQuery, removeKeysFromQuery } from '@/lib/utils';
-import router from 'next/router';
 
 interface Props {
   route: string;
