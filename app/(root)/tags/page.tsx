@@ -5,9 +5,10 @@ import React from 'react';
 import { getAllTags } from '@/lib/actions/tag.actions';
 import TagCard from '@/components/cards/TagCard';
 import NoResultFound from '@/components/shared/NoResultFound';
+import { SearchParamsProps } from '@/types';
 
-const Page = async () => {
-  const result = await getAllTags({});
+const Page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getAllTags({ searchQuery: searchParams.q });
 
   return (
     <>

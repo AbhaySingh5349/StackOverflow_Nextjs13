@@ -2,9 +2,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 import RenderTag from './RenderTag';
+import { getTopQuestions } from '@/lib/actions/question.actions';
+import { getPopularTags } from '@/lib/actions/tag.actions';
 
-const RightSideBar = () => {
-  const topQuestions = [
+/*
+const topQuestions = [
     { _id: '1', title: 'How to use express as custom server in NextJS ?' },
     { _id: '2', title: 'Cascading deletes in SQLAlchemy ?' },
     {
@@ -23,6 +25,11 @@ const RightSideBar = () => {
     { _id: '4', name: 'android', questionsCount: 6 },
     { _id: '5', name: 'java', questionsCount: 8 },
   ];
+  */
+
+const RightSideBar = async () => {
+  const topQuestions = await getTopQuestions();
+  const popularTags = await getPopularTags();
 
   return (
     <section className="background-light900_dark200 light-border custom-scrollbar sticky right-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden lg:w-[350px]">
@@ -32,7 +39,7 @@ const RightSideBar = () => {
           {topQuestions.map((question) => {
             return (
               <Link
-                href={`/questions/${question._id}`}
+                href={`/question/${question._id}`}
                 key={question._id}
                 className="flex cursor-pointer items-center justify-between gap-6"
               >

@@ -1,8 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
+
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { constructUrlQuery, removeKeysFromQuery } from '@/lib/utils';
+import router from 'next/router';
 
 interface Props {
   route: string;
@@ -19,6 +23,38 @@ const LocalSearchBar = ({
   placeholder,
   otherClasses,
 }: Props) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const query = searchParams.get('q');
+  const [search, setSearch] = useState(query || '');
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (search) {
+        const newUrl = constructUrlQuery({
+          params: searchParams.toString(),
+          key: 'q',
+          value: search,
+        });
+        router.push(newUrl, { scroll: false });
+      } else {
+        if (pathname === route) {
+          const newUrl = removeKeysFromQuery({
+            params: searchParams.toString(),
+            keys: ['q'],
+          });
+          router.push(newUrl, { scroll: false });
+        }
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [search, query, searchParams, router, pathname, route]);
+
+  console.log('Local Search Bar search query: ', search);
+
   return (
     <div
       className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}
@@ -35,8 +71,8 @@ const LocalSearchBar = ({
       <Input
         type="text"
         placeholder={placeholder}
-        value=""
-        onChange={() => {}}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
         className="paragraph-regular no-focus placeholder background-light800_darkgradient border-none shadow-none outline-none"
       />
       {iconPosition === 'right' && (

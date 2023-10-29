@@ -12,7 +12,7 @@ import {
   UpdateUserParams,
 } from './shared.types';
 import { Question } from '@/database/question.model';
-import { Error } from 'mongoose';
+import { Error, FilterQuery } from 'mongoose';
 import { Answer } from '@/database/answer.model';
 import { Tag } from '@/database/tag.model';
 
@@ -96,7 +96,18 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
 
     // const { page = 1, pageSize = 10, filter, searchQuery } = params;
 
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof User> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, 'i') } },
+        { username: { $regex: new RegExp(searchQuery, 'i') } },
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
 
     return { users };
   } catch (err) {
@@ -105,7 +116,7 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
   }
 };
 
-export const getUserInfo = async (params: GetUserByClerkIdParams) => {
+export const getUserInfo = async (params: GetUserByIdParams) => {
   try {
     await connectToDB();
 

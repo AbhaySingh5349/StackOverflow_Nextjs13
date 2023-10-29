@@ -40,10 +40,11 @@ export const Question = ({ type, userId, questionDetails }: Props) => {
   const router = useRouter();
   const pathname = usePathname(); // to know current URL
 
-  let parsedQuestionDetails = {};
-  if (questionDetails) parsedQuestionDetails = JSON.parse(questionDetails);
+  // let parsedQuestionDetails = {};
+  // if (questionDetails) parsedQuestionDetails = JSON.parse(questionDetails);
 
-  // const parsedQuestionDetails = JSON.parse(questionDetails || '');
+  const parsedQuestionDetails =
+    questionDetails && JSON.parse(questionDetails || '');
 
   const groupedTags = parsedQuestionDetails?.tags?.map((tag) => tag.name);
 

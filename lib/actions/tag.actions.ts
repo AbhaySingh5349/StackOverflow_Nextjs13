@@ -1,6 +1,6 @@
 'use server';
 
-import { Tag, TagInterface } from '@/database/tag.model';
+import { Tag } from '@/database/tag.model';
 import { User } from '@/database/user.model';
 import { connectToDB } from '../mongoose';
 import {
@@ -37,7 +37,13 @@ export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     await connectToDB();
 
-    const tags = await Tag.find({});
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof Tag> = searchQuery
+      ? { name: { $regex: new RegExp(searchQuery, 'i') } }
+      : {};
+
+    const tags = await Tag.find(query);
 
     return { tags };
   } catch (err) {
@@ -77,5 +83,25 @@ export const getQuestionByTagId = async (params: GetQuestionsByTagIdParams) => {
   } catch (err) {
     console.log('error in retrieving questions for tag id: ', err);
     throw new Error(`error in retrieving questions for tag id: ${err}`);
+  }
+};
+
+export const getPopularTags = async () => {
+  try {
+    await connectToDB();
+
+    // project property is used to reshape how we see our tags & what we want back i.e "name" property
+    // and each "tag" will have "questionsCount" property which is of "size" of "questions"
+    // so thats going to be "questionsCount" related to each tag
+    const tags = await Tag.aggregate([
+      { $project: { name: 1, questionsCount: { $size: '$questions' } } },
+      { $sort: { questionsCount: -1 } },
+      { $limit: 5 },
+    ]);
+
+    return tags;
+  } catch (err) {
+    console.log('error in retrieving popular tags: ', err);
+    throw new Error(`error in retrieving popular tags: ${err}`);
   }
 };

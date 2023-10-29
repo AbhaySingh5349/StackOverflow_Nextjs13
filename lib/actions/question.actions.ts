@@ -24,7 +24,18 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     await connectToDB();
 
-    const questions = await Question.find({})
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, 'i') } },
+        { content: { $regex: new RegExp(searchQuery, 'i') } },
+      ];
+    }
+
+    const questions = await Question.find(query)
       .populate({ path: 'tags', model: Tag }) // to get all info about tags (as we stored only ID in questions collection)
       .populate({ path: 'author', model: User }) // to get all info about author (as we stored only ID in questions collection)
       .sort({ createdAt: -1 });
@@ -269,5 +280,20 @@ export const editQuestion = async (params: EditQuestionParams) => {
   } catch (err) {
     console.log('error in deleting question: ', err);
     throw new Error(`error in deleting question: ${err}`);
+  }
+};
+
+export const getTopQuestions = async () => {
+  try {
+    await connectToDB();
+
+    const questions = await Question.find({})
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
+
+    return questions;
+  } catch (err) {
+    console.log('error in retrieving top 5 questions: ', err);
+    throw new Error(`error in retrieving top 5 questions: ${err}`);
   }
 };

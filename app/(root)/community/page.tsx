@@ -5,15 +5,16 @@ import React from 'react';
 import { getAllUsers } from '@/lib/actions/user.action';
 import Link from 'next/link';
 import UserCard from '@/components/cards/UserCard';
+import { SearchParamsProps } from '@/types';
 
-const Page = async () => {
-  const result = await getAllUsers({});
+const Page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getAllUsers({ searchQuery: searchParams.q });
 
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>
 
-      <div className="mt-6 flex justify-between gap-4 max-sm:flex-col sm:items-center">
+      <div className="mt-6 flex justify-between gap-2 max-sm:flex-col sm:items-center">
         <LocalSearchBar
           route="/community"
           iconPosition="left"
@@ -27,7 +28,7 @@ const Page = async () => {
         />
       </div>
 
-      <section className="mt-8 flex flex-wrap gap-4">
+      <section className="mt-8 flex flex-wrap gap-1">
         {result.users.length > 0 ? (
           result.users.map((user) => {
             return <UserCard key={user._id} user={user} />;
