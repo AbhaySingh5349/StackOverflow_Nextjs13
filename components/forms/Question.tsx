@@ -40,9 +40,12 @@ export const Question = ({ type, userId, questionDetails }: Props) => {
   const router = useRouter();
   const pathname = usePathname(); // to know current URL
 
-  const parsedQuestionDetails = JSON.parse(questionDetails || '');
+  let parsedQuestionDetails = {};
+  if (questionDetails) parsedQuestionDetails = JSON.parse(questionDetails);
 
-  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name);
+  // const parsedQuestionDetails = JSON.parse(questionDetails || '');
+
+  const groupedTags = parsedQuestionDetails?.tags?.map((tag) => tag.name);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({

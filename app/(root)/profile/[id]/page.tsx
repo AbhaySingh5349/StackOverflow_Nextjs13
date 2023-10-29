@@ -19,13 +19,16 @@ const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
   if (!clerkId) redirect('/sign-in');
 
+  // const clickedUser = await User.findById(params.id);
+
   const { user, questionsCount, answersCount } = await getUserInfo({
-    clerkId: params.id,
+    clerkId,
   });
+
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
-        <div className="flex flex-col items-start gap-4 lg:flex-row">
+        <div className="flex flex-col items-start gap-4 sm:flex-row">
           <Image
             src={user.picture}
             alt="profile picture"
@@ -33,20 +36,20 @@ const Page = async ({ params, searchParams }: URLProps) => {
             height={120}
             className="rounded-full object-cover"
           />
-          <div className="mt-3">
+          <div className="mt-2">
             <h2 className="h2-bold text-dark100_light900">{user.name}</h2>
             <p className="paragraph-regular text-dark200_light800">
               @{user.username}
             </p>
-            <div className="mt-4 flex-col items-center justify-start">
-              {user.portfolio && (
+            <div className="mt-4 flex flex-row items-center justify-start gap-4 max-sm:flex-col">
+              {user.portfolioWebsite && (
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
-                  href={user.portfolio}
+                  href={user.portfolioWebsite}
                   title="portfolio"
                 />
               )}
-              {user.loaction && (
+              {user.location && (
                 <ProfileLink
                   imgUrl="/assets/icons/location.svg"
                   title={user.location}

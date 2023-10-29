@@ -52,7 +52,9 @@ export const updateUser = async (params: UpdateUserParams) => {
 
     const { clerkId, updateData, path } = params;
 
-    await User.findOneAndUpdate({ clerkId }, updateData, { new: true });
+    await User.findOneAndUpdate({ clerkId }, updateData, {
+      new: true,
+    });
 
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
@@ -103,7 +105,7 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
   }
 };
 
-export const getUserInfo = async (params: GetUserByIdParams) => {
+export const getUserInfo = async (params: GetUserByClerkIdParams) => {
   try {
     await connectToDB();
 

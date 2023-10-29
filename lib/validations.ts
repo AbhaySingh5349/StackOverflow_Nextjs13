@@ -20,3 +20,23 @@ export const QuestionSchema = z.object({
 export const AnswerSchema = z.object({
   answer: z.string().min(5, 'Answer needs to be at least 5 characters'),
 });
+
+export const EditProfileSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name exceeds limit of 50 characters'),
+  username: z
+    .string()
+    .min(2, 'UserName must be at least 2 characters')
+    .max(50, 'UserName exceeds limit of 50 characters'),
+  portfolioWebsite: z.string().url(),
+  location: z
+    .string()
+    .min(2, 'Location must be at least 2 characters')
+    .max(50, 'Location exceeds limit of 50 characters'),
+  bio: z
+    .string()
+    .min(20, 'Bio must be at least 20 characters')
+    .max(100, 'Bio exceeds limit of 100 characters'),
+});
