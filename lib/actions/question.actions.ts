@@ -24,7 +24,9 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     await connectToDB();
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 5 } = params;
+
+    const skip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -54,11 +56,17 @@ export const getQuestions = async (params: GetQuestionsParams) => {
     }
 
     const questions = await Question.find(query)
+      .skip(skip)
+      .limit(pageSize)
       .populate({ path: 'tags', model: Tag }) // to get all info about tags (as we stored only ID in questions collection)
       .populate({ path: 'author', model: User }) // to get all info about author (as we stored only ID in questions collection)
       .sort(sortOptions);
 
-    return { questions };
+    const questionsCount = await Question.countDocuments(query);
+
+    const hasNext = questionsCount > skip + questions.length;
+
+    return { questions, hasNext };
   } catch (err) {
     console.log('error in fetching questions: ', err);
     throw new Error(`error in fetching questions: ${err}`);
@@ -227,7 +235,9 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
   try {
     await connectToDB();
 
-    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const { clerkId, page = 1, pageSize = 5, filter, searchQuery } = params;
+
+    const skip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, 'i') } }
@@ -258,7 +268,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
     const user = await User.findOne({ clerkId }).populate({
       path: 'saved',
       match: query,
-      options: { sort: sortOptions },
+      options: { sort: sortOptions, skip, limit: pageSize + 1 },
       populate: [
         { path: 'tags', model: Tag, select: '_id name' },
         { path: 'author', model: User, select: '_id clerkId name picture' },
@@ -267,9 +277,11 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
 
     if (!user) throw new Error('user not found');
 
+    const hasNext = user.saved.length > pageSize;
+
     const savedQuestions = user.saved;
 
-    return { questions: savedQuestions };
+    return { questions: savedQuestions, hasNext };
   } catch (err) {
     console.log('error in retrieving saved questions: ', err);
     throw new Error(`error in retrieving saved questions: ${err}`);

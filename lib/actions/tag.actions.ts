@@ -37,7 +37,9 @@ export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     await connectToDB();
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 5 } = params;
+
+    const skip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Tag> = searchQuery
       ? { name: { $regex: new RegExp(searchQuery, 'i') } }
@@ -62,9 +64,16 @@ export const getAllTags = async (params: GetAllTagsParams) => {
         break;
     }
 
-    const tags = await Tag.find(query).sort(sortOptions);
+    const tags = await Tag.find(query)
+      .skip(skip)
+      .limit(pageSize)
+      .sort(sortOptions);
 
-    return { tags };
+    const tagsCount = await Tag.countDocuments(query);
+
+    const hasNext = tagsCount > skip + tags.length;
+
+    return { tags, hasNext };
   } catch (err) {
     console.log('error in retrieving tags: ', err);
     throw new Error(`error in retrieving tags: ${err}`);
@@ -75,9 +84,9 @@ export const getQuestionByTagId = async (params: GetQuestionsByTagIdParams) => {
   try {
     await connectToDB();
 
-    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+    const { tagId, page = 1, pageSize = 5, searchQuery } = params;
 
-    // const query: FilterQuery<TagInterface> = {_id: tagId}
+    const skip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, 'i') } }
@@ -87,7 +96,7 @@ export const getQuestionByTagId = async (params: GetQuestionsByTagIdParams) => {
       path: 'questions',
       model: Question,
       match: query,
-      options: { sort: { createdAt: -1 } },
+      options: { sort: { createdAt: -1 }, skip, limit: pageSize + 1 },
       populate: [
         { path: 'tags', model: Tag, select: '_id name' },
         { path: 'author', model: User, select: '_id clerkId name picture' },
@@ -98,7 +107,9 @@ export const getQuestionByTagId = async (params: GetQuestionsByTagIdParams) => {
 
     const questions = tag.questions;
 
-    return { tagTitle: tag.name, questions };
+    const hasNext = questions.length > pageSize;
+
+    return { tagTitle: tag.name, questions, hasNext };
   } catch (err) {
     console.log('error in retrieving questions for tag id: ', err);
     throw new Error(`error in retrieving questions for tag id: ${err}`);

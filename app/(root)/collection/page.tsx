@@ -7,15 +7,17 @@ import { getSavedQuestions } from '@/lib/actions/question.actions';
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { SearchParamsProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId: clerkId } = auth();
   if (!clerkId) redirect('/sign-in');
 
-  const { questions } = await getSavedQuestions({
+  const { questions, hasNext } = await getSavedQuestions({
     clerkId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -60,6 +62,13 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             );
           })
         )}
+      </div>
+
+      <div className="mt-8">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          hasNext={hasNext}
+        />
       </div>
     </>
   );

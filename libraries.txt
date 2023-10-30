@@ -70,3 +70,7 @@ npm install prismjs (for code content)
 // working with search queries
 
 npm install query-string
+
+// react icons (global-search loading)
+
+npm install @radix-ui/react-icons

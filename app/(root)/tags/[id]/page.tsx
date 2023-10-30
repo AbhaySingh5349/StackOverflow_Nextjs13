@@ -4,13 +4,14 @@ import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
 import React from 'react';
 import { URLProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 // import { QuestionInterface } from '@/database/question.model';
 
 const Page = async ({ params, searchParams }: URLProps) => {
-  const { tagTitle, questions } = await getQuestionByTagId({
+  const { tagTitle, questions, hasNext } = await getQuestionByTagId({
     tagId: params.id,
-    page: 1,
     searchQuery: searchParams.q,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -51,6 +52,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
             );
           })
         )}
+      </div>
+
+      <div className="mt-8">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          hasNext={hasNext}
+        />
       </div>
     </>
   );

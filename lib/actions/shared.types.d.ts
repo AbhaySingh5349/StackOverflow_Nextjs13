@@ -32,7 +32,7 @@ export interface DeleteAnswerParams {
 
 export interface SearchParams {
   query?: string | null;
-  type?: string | null;
+  dbType?: string | null;
 }
 
 export interface RecommendedParams {

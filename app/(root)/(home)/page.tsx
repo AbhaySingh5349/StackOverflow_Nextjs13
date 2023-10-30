@@ -8,6 +8,7 @@ import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
 import { getQuestions } from '@/lib/actions/question.actions';
 import { SearchParamsProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
 /*
 const dummyQuestions = [
@@ -98,9 +99,10 @@ const dummyQuestions = [
 */
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const result = await getQuestions({
+  const { questions, hasNext } = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
   // console.log('get questions: ', result?.questions);
   return (
@@ -132,14 +134,14 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {result?.questions.length === 0 ? (
+        {questions.length === 0 ? (
           <NoResultFound
             title="There are no questions to display"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
         ) : (
-          result?.questions.map((question) => {
+          questions.map((question) => {
             return (
               <QuestionCard
                 key={question._id}
@@ -155,6 +157,13 @@ export default async function Home({ searchParams }: SearchParamsProps) {
             );
           })
         )}
+      </div>
+
+      <div className="mt-8">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          hasNext={hasNext}
+        />
       </div>
     </>
   );

@@ -3,6 +3,7 @@ import Filter from './Filter';
 import { AnswerFilters } from '../../constants/filters';
 import { getAnswers } from '@/lib/actions/answer.action';
 import AnswerCard from '../cards/AnswerCard';
+import Pagination from './Pagination';
 
 interface Props {
   questionId: string;
@@ -19,7 +20,7 @@ const AllAnswers = async ({
   page,
   filter,
 }: Props) => {
-  const answers = await getAnswers({
+  const { answers, hasNext } = await getAnswers({
     questionId,
     page: page ? +page : 1,
     filter,
@@ -46,6 +47,10 @@ const AllAnswers = async ({
           </div>
         )}
       </section>
+
+      <div className="mt-8 w-full">
+        <Pagination pageNumber={page ? +page : 1} hasNext={hasNext} />
+      </div>
     </div>
   );
 };

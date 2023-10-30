@@ -6,11 +6,13 @@ import { getAllUsers } from '@/lib/actions/user.action';
 import Link from 'next/link';
 import UserCard from '@/components/cards/UserCard';
 import { SearchParamsProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
-  const result = await getAllUsers({
+  const { users, hasNext } = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -32,29 +34,27 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
       </div>
 
       <section className="mt-8 flex flex-wrap gap-1">
-        {result.users.length > 0 ? (
-          result.users.map((user) => {
+        {users.length > 0 ? (
+          users.map((user) => {
             return <UserCard key={user._id} user={user} />;
           })
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
             <p>No Users Found</p>
             <Link href="/sign-up" className="mt-1 font-bold text-accent-blue">
-              Join to be first in the community!
+              Join the amazing developers community!
             </Link>
           </div>
         )}
       </section>
+      <div className="mt-8">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          hasNext={hasNext}
+        />
+      </div>
     </>
   );
 };
 
 export default Page;
-
-// bands & indexes which can be used in diff scenarios
-// corelate with sentinel bands
-// relation between index & health
-// predective modelling performance & stress analysis
-// what index for what type of work (how cahl relevant to diff crops)
-// if they did study for particular crop
-// extract info

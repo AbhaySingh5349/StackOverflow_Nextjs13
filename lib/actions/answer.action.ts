@@ -41,7 +41,9 @@ export const getAnswers = async (params: GetAnswersParams) => {
   try {
     await connectToDB();
 
-    const { questionId, page, filter } = params;
+    const { questionId, page = 1, pageSize = 5, filter } = params;
+
+    const skip = (page - 1) * pageSize;
 
     let sortOptions = { createdAt: -1 };
 
@@ -63,6 +65,8 @@ export const getAnswers = async (params: GetAnswersParams) => {
     }
 
     const answers = await Answer.find({ questionId })
+      .skip(skip)
+      .limit(pageSize)
       .populate({
         path: 'author',
         model: User,
@@ -70,7 +74,11 @@ export const getAnswers = async (params: GetAnswersParams) => {
       })
       .sort(sortOptions);
 
-    return answers;
+    const answersCount = await Answer.countDocuments({ questionId });
+
+    const hasNext = answersCount > skip + answers.length;
+
+    return { answers, hasNext };
   } catch (err) {
     console.log('error in retrieving answer: ', err);
     throw new Error(`error in retrieving answer: ${err}`);

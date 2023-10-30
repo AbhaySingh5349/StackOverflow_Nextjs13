@@ -96,7 +96,9 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
 
     // const { page = 1, pageSize = 10, filter, searchQuery } = params;
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+
+    const skip = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof User> = {};
 
@@ -123,9 +125,15 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
         break;
     }
 
-    const users = await User.find(query).sort(sortOptions);
+    const users = await User.find(query)
+      .skip(skip)
+      .limit(pageSize)
+      .sort(sortOptions);
 
-    return { users };
+    const usersCount = await User.countDocuments(query);
+    const hasNext = usersCount > skip + users.length;
+
+    return { users, hasNext };
   } catch (err) {
     console.log('error in retrieving users: ', err);
     throw new Error(`error in retrieving users: ${err}`);
@@ -154,7 +162,11 @@ export const getUserQuestions = async (params: GetUserStatsParams) => {
 
     const { userId, page = 1, pageSize = 10 } = params;
 
+    const skip = (page - 1) * pageSize;
+
     const questions = await Question.find({ author: userId })
+      .skip(skip)
+      .limit(pageSize)
       .sort({
         views: -1,
         upvotes: -1,
@@ -166,7 +178,9 @@ export const getUserQuestions = async (params: GetUserStatsParams) => {
 
     const questionsCount = await Question.countDocuments({ author: userId });
 
-    return { questions, questionsCount };
+    const hasNext = questionsCount > skip + questions.length;
+
+    return { questions, questionsCount, hasNext };
   } catch (err) {}
 };
 
@@ -176,7 +190,11 @@ export const getUserAnswers = async (params: GetUserStatsParams) => {
 
     const { userId, page = 1, pageSize = 10 } = params;
 
+    const skip = (page - 1) * pageSize;
+
     const answers = await Answer.find({ author: userId })
+      .skip(skip)
+      .limit(pageSize)
       .sort({
         upvotes: -1,
       })
@@ -187,7 +205,9 @@ export const getUserAnswers = async (params: GetUserStatsParams) => {
 
     const answersCount = await Answer.countDocuments({ author: userId });
 
-    return { answers, answersCount };
+    const hasNext = answersCount > skip + answers.length;
+
+    return { answers, answersCount, hasNext };
   } catch (err) {}
 };
 
