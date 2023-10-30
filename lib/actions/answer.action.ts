@@ -19,16 +19,27 @@ export const createAnswer = async (params: CreateAnswerParams) => {
 
     const { content, author, questionId, path } = params;
 
-    const newAnswer = await Answer.create({
+    const answer = await Answer.create({
       content,
       author,
       questionId,
     });
 
     // add answer to questions array
-    await Question.findByIdAndUpdate(questionId, {
-      $push: { answers: newAnswer._id },
+    const question = await Question.findByIdAndUpdate(questionId, {
+      $push: { answers: answer._id },
     });
+
+    // create an interaction record for user's answer action
+    await Interaction.create({
+      userId: author,
+      action: 'answer',
+      questionId: answer._id,
+      tags: question.tags,
+    });
+
+    // incrememt authors reputation by +5 for creating answer
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
 
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
@@ -111,7 +122,16 @@ export const upVoteAnswer = async (params: AnswerVoteParams) => {
       throw new Error('Answer not found');
     }
 
-    // increment authors reputation
+    // increment users reputation by +1/-1 for upvoting/revoking an upvote to answer
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasUpVoted ? -1 : 1 },
+    });
+
+    // increment authors reputation by +2/-2 for receiving an upvote/downvote to answer
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasUpVoted ? -2 : 2 },
+    });
+
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
     console.log('error in upVoting answer: ', err);
@@ -145,7 +165,16 @@ export const downVoteAnswer = async (params: AnswerVoteParams) => {
       throw new Error('Answer not found');
     }
 
-    // increment authors reputation
+    // increment users reputation by +1/-1 for upvoting/revoking a downvote to answer
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasDownVoted ? -1 : 1 },
+    });
+
+    // increment authors reputation by +2/-2 for receiving an downvote to answer
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasDownVoted ? -2 : 2 },
+    });
+
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
     console.log('error in downVoting answer: ', err);

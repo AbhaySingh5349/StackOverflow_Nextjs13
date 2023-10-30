@@ -37,7 +37,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       ];
     }
 
-    let sortOptions = {};
+    let sortOptions = { createdAt: -1 };
 
     switch (filter) {
       case 'newest':
@@ -120,8 +120,15 @@ export const createQuestion = async (params: CreateQuestionParams) => {
     });
 
     // create an interaction record for user's ask_question action
+    await Interaction.create({
+      userId: author,
+      action: 'ask_question',
+      questionId: question._id,
+      tags: tagDocuments,
+    });
 
     // incrememt authors reputation by +5 for creating question
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
 
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
@@ -156,7 +163,16 @@ export const upVoteQuestion = async (params: QuestionVoteParams) => {
       throw new Error('Question not found');
     }
 
-    // increment authors reputation
+    // increment users reputation by +1/-1 for upvoting/revoking an upvote to question
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasUpVoted ? -1 : 1 },
+    });
+
+    // increment authors reputation by +2/-2 for receiving an upvote/downvote to question
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasUpVoted ? -2 : 2 },
+    });
+
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
     console.log('error in upVoting question: ', err);
@@ -190,7 +206,16 @@ export const downVoteQuestion = async (params: QuestionVoteParams) => {
       throw new Error('Question not found');
     }
 
-    // increment authors reputation
+    // increment users reputation by +1/-1 for upvoting/revoking an upvote to question
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasDownVoted ? -1 : 1 },
+    });
+
+    // increment authors reputation by +2/-2 for receiving an upvote/downvote to question
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasDownVoted ? -2 : 2 },
+    });
+
     revalidatePath(path); // gives new data that was submitted (automatic refresh of path we are redirecting to)
   } catch (err) {
     console.log('error in downVoting question: ', err);

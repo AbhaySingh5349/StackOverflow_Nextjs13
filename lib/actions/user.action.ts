@@ -168,6 +168,7 @@ export const getUserQuestions = async (params: GetUserStatsParams) => {
       .skip(skip)
       .limit(pageSize)
       .sort({
+        createdAt: -1,
         views: -1,
         upvotes: -1,
       })
