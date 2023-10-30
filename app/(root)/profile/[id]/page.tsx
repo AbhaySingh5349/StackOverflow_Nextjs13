@@ -21,9 +21,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
   // const clickedUser = await User.findById(params.id);
 
-  const { user, questionsCount, answersCount } = await getUserInfo({
-    clerkId,
-  });
+  const { user, questionsCount, answersCount, badgeCounts } = await getUserInfo(
+    {
+      clerkId,
+    }
+  );
 
   return (
     <>
@@ -79,7 +81,12 @@ const Page = async ({ params, searchParams }: URLProps) => {
           </SignedIn>
         </div>
       </div>
-      <Stats questionsCount={questionsCount} answersCount={answersCount} />
+      <Stats
+        questionsCount={questionsCount}
+        answersCount={answersCount}
+        reputation={user.reputation}
+        badgeCounts={badgeCounts}
+      />
       <div className="mt-8 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
           <TabsList className="background-light800_dark400 min-h-[42px] p-1">
