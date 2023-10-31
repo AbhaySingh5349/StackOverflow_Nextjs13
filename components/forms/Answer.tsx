@@ -20,6 +20,7 @@ import { useTheme } from '@/context/ThemeProvider';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { createAnswer } from '@/lib/actions/answer.action';
+import { toast } from '../ui/use-toast';
 
 interface Props {
   question: string;
@@ -62,6 +63,10 @@ const Answer = ({ question, questionId, userId }: Props) => {
 
         editor.setContent('');
       }
+
+      toast({
+        title: 'Answer added',
+      });
     } catch (err) {
     } finally {
       setIsSubmitting(false); // either error or successfull creation of answer

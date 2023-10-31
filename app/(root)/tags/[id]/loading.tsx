@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 const Loading = () => {
   return (
     <section>
-      <h1 className="h1-bold text-dark100_light900">All Users</h1>
+      <Skeleton className="h-14 flex-1" />
       <div className="my-10 flex flex-wrap gap-4">
         <Skeleton className="h-14 flex-1" />
         <Skeleton className="h-14 w-28" />

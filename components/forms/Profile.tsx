@@ -23,6 +23,7 @@ import { EditProfileSchema } from '@/lib/validations';
 
 import { useRouter, usePathname } from 'next/navigation';
 import { updateUser } from '@/lib/actions/user.action';
+import { toast } from '../ui/use-toast';
 import router from 'next/router';
 
 interface Props {
@@ -64,6 +65,10 @@ const Profile = ({ clerkId, user }: Props) => {
           bio: values.bio,
         },
         path: pathname,
+      });
+
+      toast({
+        title: 'Profile changes updated',
       });
 
       // user can see how they updated values

@@ -5,7 +5,6 @@ import QuestionCard from '@/components/cards/QuestionCard';
 import React from 'react';
 import { URLProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
-import Loading from './loading';
 // import { QuestionInterface } from '@/database/question.model';
 
 const Page = async ({ params, searchParams }: URLProps) => {
@@ -15,10 +14,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
     page: searchParams.page ? +searchParams.page : 1,
   });
 
-  const isLoading = true;
-  if (isLoading) {
-    return <Loading />;
-  }
+  // const isLoading = true;
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   return (
     <>

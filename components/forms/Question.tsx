@@ -26,6 +26,7 @@ import { QuestionSchema } from '@/lib/validations';
 import { createQuestion, editQuestion } from '@/lib/actions/question.actions';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeProvider';
+import { toast } from '../ui/use-toast';
 
 interface Props {
   type?: string;
@@ -81,7 +82,9 @@ export const Question = ({ type, userId, questionDetails }: Props) => {
           path: pathname!,
         });
 
-        // console.log('Pathname: ', pathname);
+        toast({
+          title: 'Question added',
+        });
 
         // navigate to home page
         router.push('/');
