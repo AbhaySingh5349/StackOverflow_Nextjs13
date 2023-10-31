@@ -13,6 +13,7 @@ import {
   GetQuestionsParams,
   GetSavedQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
   ToggleSaveQuestionParams,
 } from './shared.types';
 
@@ -372,5 +373,68 @@ export const getTopQuestions = async () => {
   } catch (err) {
     console.log('error in retrieving top 5 questions: ', err);
     throw new Error(`error in retrieving top 5 questions: ${err}`);
+  }
+};
+
+export const getRecommendedQuestions = async (params: RecommendedParams) => {
+  try {
+    await connectToDB();
+
+    const { clerkId, page = 1, pageSize = 5, searchQuery } = params;
+
+    const user = await User.findOne({ clerkId });
+
+    if (!user) throw new Error('user not found');
+
+    const skip = (page - 1) * pageSize;
+
+    // user's interaction
+    const userInteractions = await Interaction.find({ userId: user._id })
+      .populate('tags')
+      .exec();
+
+    // extract tags from user's interactions
+    const userTags = userInteractions.reduce((tags, interaction) => {
+      if (interaction.tags) tags = tags.concat(interaction.tags);
+      return tags;
+    }, []);
+
+    // get distinct Tag ID's from users interactions
+    const distinctUserTagIds = [
+      ...new Set(userTags.map((tag: any) => tag._id)),
+    ];
+
+    const query: FilterQuery<typeof Question> = {
+      $and: [
+        { tags: { $in: distinctUserTagIds } }, // questions with users tags
+        { author: { $ne: user._id } }, // exclude users own questions
+      ],
+    };
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: searchQuery, $options: 'i' } },
+        { content: { $regex: searchQuery, $options: 'i' } },
+      ];
+    }
+
+    const questionsCount = await Question.countDocuments(query);
+
+    const recommendedQuestions = await Question.find(query)
+      .skip(skip)
+      .limit(pageSize)
+      .populate([
+        { path: 'tags', model: Tag },
+        { path: 'author', model: User },
+      ]);
+
+    console.log('questionsCount: ', questionsCount, ' , skip: ', skip);
+
+    const hasNext = questionsCount > skip + recommendedQuestions.length;
+
+    return { questions: recommendedQuestions, hasNext };
+  } catch (err) {
+    console.log('error in retrieving recommended questions: ', err);
+    throw new Error(`error in retrieving recommended questions: ${err}`);
   }
 };

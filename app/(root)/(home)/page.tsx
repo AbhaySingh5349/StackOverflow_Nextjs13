@@ -6,9 +6,14 @@ import { HomePageFilters } from '@/constants/filters';
 import HomeFilters from '@/components/home/HomeFilters';
 import NoResultFound from '@/components/shared/NoResultFound';
 import QuestionCard from '@/components/cards/QuestionCard';
-import { getQuestions } from '@/lib/actions/question.actions';
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from '@/lib/actions/question.actions';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
+import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
@@ -106,11 +111,23 @@ const dummyQuestions = [
 */
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const { questions, hasNext } = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  let result;
+
+  if (searchParams?.filter === 'recommended') {
+    const { userId: clerkId } = auth();
+    if (!clerkId) redirect('/sign-in');
+
+    result = await getRecommendedQuestions({
+      clerkId,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
 
   // const isLoading = true;
   // if (isLoading) {
@@ -146,14 +163,14 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {questions.length === 0 ? (
+        {result?.questions?.length === 0 ? (
           <NoResultFound
             title="There are no questions to display"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
         ) : (
-          questions.map((question) => {
+          result?.questions?.map((question) => {
             return (
               <QuestionCard
                 key={question._id}
@@ -174,7 +191,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
       <div className="mt-8">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}
-          hasNext={hasNext}
+          hasNext={result?.hasNext}
         />
       </div>
     </>
