@@ -104,7 +104,12 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
   });
-  // console.log('get questions: ', result?.questions);
+
+  // const isLoading = true;
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
+
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">

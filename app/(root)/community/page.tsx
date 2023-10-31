@@ -15,6 +15,11 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
     page: searchParams.page ? +searchParams.page : 1,
   });
 
+  // const isLoading = true;
+  // if (isLoading) {
+  //   return <Looading />;
+  // }
+
   return (
     <>
       <h1 className="h1-bold text-dark100_light900">All Users</h1>

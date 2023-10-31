@@ -22,10 +22,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
   // const clickedUser = await User.findById(params.id);
 
   const { user, questionsCount, answersCount, badgeCounts } = await getUserInfo(
-    {
-      clerkId,
-    }
+    { clerkId }
   );
+
+  // const isLoading = true;
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   return (
     <>

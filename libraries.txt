@@ -37,6 +37,7 @@ npm install @clerk/nextjs
 add App Router and middleware code 
 
 // shadcn for theme switching, mobile nav bar, search inputs, render-tags, dropdowns, forms, stats tab , text-area for bio
+// skeleton (for loading)
 
 npx shadcn-ui@latest init
 npx shadcn-ui@latest add button
@@ -48,6 +49,7 @@ npx shadcn-ui@latest add select
 npx shadcn-ui@latest add form
 npx shadcn-ui@latest add tabs
 npx shadcn-ui@latest add textarea
+npx shadcn-ui@latest add skeleton
 
 // Tiny MCE editor for asking questions
 
