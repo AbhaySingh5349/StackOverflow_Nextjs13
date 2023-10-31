@@ -10,6 +10,13 @@ import { getQuestions } from '@/lib/actions/question.actions';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Home | Dev Overflow',
+  description: 'Dev overflow is a community of 1000+ developers. Join Us!',
+};
+
 /*
 const dummyQuestions = [
   {
