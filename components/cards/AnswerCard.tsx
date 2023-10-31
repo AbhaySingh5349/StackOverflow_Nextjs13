@@ -40,7 +40,7 @@ const AnswerCard = ({ answer, userId }: Props) => {
             />
 
             <div className="flex flex-col sm:flex-row sm:items-center">
-              <p className="paragraph-semibold text-dark300_light700">
+              <p className="paragraph-semibold text-dark300_light700 line-clamp-1">
                 {answer.author.name}
               </p>
               <p className="small-regular text-light400_light500 ml-0.5 mt-1 line-clamp-1">

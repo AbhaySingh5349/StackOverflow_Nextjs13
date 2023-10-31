@@ -8,7 +8,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { constructUrlQuery, removeKeysFromQuery } from '@/lib/utils';
 import GlobalSearchResult from './GlobalSearchResult';
 
-export const GlobalSearch = () => {
+export const GlobalSearchBar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,9 +21,9 @@ export const GlobalSearch = () => {
 
   useEffect(() => {
     const handleOutsideClick = (event: any) => {
-      // @ts-ignore
       if (
         searchConainerRef.current &&
+        // @ts-ignore
         !searchConainerRef.current.contains(event.target)
       ) {
         setIsModalOpen(false);
@@ -92,7 +92,7 @@ export const GlobalSearch = () => {
             if (e.target.value.trim() === '' && isModalOpen)
               setIsModalOpen(false);
           }}
-          className="paragraph-regular no-focus placeholder background-light800_darkgradient text-dark400_light700 border-none shadow-none outline-none"
+          className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
         />
       </div>
       {isModalOpen && <GlobalSearchResult />}

@@ -4,7 +4,7 @@ import React from 'react';
 import { SignedIn, UserButton } from '@clerk/nextjs';
 import Theme from './Theme';
 import MobileNav from './MobileNav';
-import { GlobalSearch } from '../search/GlobalSearch';
+import { GlobalSearchBar } from '../search/GlobalSearchBar';
 
 const Navbar = () => {
   return (
@@ -20,7 +20,7 @@ const Navbar = () => {
           Dev <span className="text-primary-500">Overflow</span>
         </p>
       </Link>
-      <GlobalSearch />
+      <GlobalSearchBar />
       <div className="flex-between gap-5">
         <Theme />
         <SignedIn>
