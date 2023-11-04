@@ -38,7 +38,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       ];
     }
 
-    let sortOptions = { createdAt: -1 };
+    let sortOptions = {};
 
     switch (filter) {
       case 'newest':
@@ -53,6 +53,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
         query.answers = { $size: 0 };
         break;
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 
@@ -269,7 +270,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       ? { title: { $regex: new RegExp(searchQuery, 'i') } }
       : {};
 
-    let sortOptions = { createdAt: -1 };
+    let sortOptions = {};
 
     switch (filter) {
       case 'mostRecent':
@@ -288,6 +289,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
         sortOptions = { answers: -1 };
         break;
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 

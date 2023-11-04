@@ -9,7 +9,7 @@ import {
 import { formatNumberWithExtension } from '@/lib/utils';
 import Image from 'next/image';
 import React, { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { downVoteAnswer, upVoteAnswer } from '@/lib/actions/answer.action';
 import { viewQuestion } from '@/lib/actions/interaction.action';
 import { toast } from '../ui/use-toast';

@@ -77,3 +77,10 @@ npm install query-string
 // react icons (global-search loading)
 
 npm install @radix-ui/react-icons
+
+// check for package updates
+
+npm install -g npm-check-updates
+ncu (to show all updated packages)
+ncu -u (to update all packages)
+npm install (to install updated packages)

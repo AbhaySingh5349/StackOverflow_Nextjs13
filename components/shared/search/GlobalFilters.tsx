@@ -1,7 +1,7 @@
 'use client';
 
 import { GlobalSearchFilters } from '@/constants/filters';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { constructUrlQuery } from '@/lib/utils';
 import React, { useState } from 'react';
 

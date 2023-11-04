@@ -56,7 +56,7 @@ export const getAnswers = async (params: GetAnswersParams) => {
 
     const skip = (page - 1) * pageSize;
 
-    let sortOptions = { createdAt: -1 };
+    let sortOptions = {};
 
     switch (filter) {
       case 'highestUpvotes':
@@ -72,6 +72,7 @@ export const getAnswers = async (params: GetAnswersParams) => {
         sortOptions = { createdAt: 1 };
         break;
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 
