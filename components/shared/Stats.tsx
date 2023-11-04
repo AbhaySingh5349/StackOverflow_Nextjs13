@@ -25,7 +25,7 @@ const Stats = ({
         <div className="light-border background-light900_dark300 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-4 shadow-light-300 dark:shadow-dark-200">
           <div className="flex flex-col items-center justify-center">
             <p className="paragraph-semibold text-dark200_light900">
-              {formatNumberWithExtension(questionsCount)}
+              {formatNumberWithExtension(questionsCount!)}
             </p>
             <p className="body-medium text-dark400_light700">Questions</p>
           </div>
@@ -33,7 +33,7 @@ const Stats = ({
         <div className="light-border background-light900_dark300 flex flex-wrap items-center justify-evenly gap-4 rounded-md border p-4 shadow-light-300 dark:shadow-dark-200">
           <div className="flex flex-col items-center justify-center">
             <p className="paragraph-semibold text-dark200_light900">
-              {formatNumberWithExtension(answersCount)}
+              {formatNumberWithExtension(answersCount!)}
             </p>
             <p className="body-medium text-dark400_light700">answers</p>
           </div>
@@ -41,17 +41,17 @@ const Stats = ({
 
         <StatsCard
           imgUrl="/assets/icons/gold-medal.svg"
-          value={badgeCounts.GOLD}
+          value={badgeCounts?.GOLD!}
           title="Gold Badges"
         />
         <StatsCard
           imgUrl="/assets/icons/silver-medal.svg"
-          value={badgeCounts.SILVER}
+          value={badgeCounts?.SILVER!}
           title="Silver Badges"
         />
         <StatsCard
           imgUrl="/assets/icons/bronze-medal.svg"
-          value={badgeCounts.BRONZE}
+          value={badgeCounts?.BRONZE!}
           title="Bronze Badges"
         />
       </div>
