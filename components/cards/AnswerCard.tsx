@@ -49,6 +49,7 @@ const AnswerCard = ({ answer, userId }: Props) => {
             </div>
           </Link>
           <div className="flex">
+            {/* @ts-ignore */}
             <Votes
               type="answer"
               itemId={JSON.stringify(answer._id)}

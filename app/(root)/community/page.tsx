@@ -48,6 +48,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
       <section className="mt-8 flex flex-wrap gap-1">
         {users.length > 0 ? (
           users.map((user) => {
+            // @ts-ignore
             return <UserCard key={user._id} user={user} />;
           })
         ) : (

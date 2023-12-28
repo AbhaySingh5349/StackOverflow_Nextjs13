@@ -45,7 +45,7 @@ export const getAllTags = async (params: GetAllTagsParams) => {
       ? { name: { $regex: new RegExp(searchQuery, 'i') } }
       : {};
 
-    let sortOptions = { createdAt: -1 };
+    let sortOptions = {};
 
     switch (filter) {
       case 'popular':
@@ -61,6 +61,7 @@ export const getAllTags = async (params: GetAllTagsParams) => {
         sortOptions = { name: 1 };
         break;
       default:
+        sortOptions = { createdAt: -1 };
         break;
     }
 

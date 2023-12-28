@@ -36,7 +36,7 @@ const AllAnswers = async ({
 
       <section>
         {answers.length > 0 ? (
-          answers.map((answer) => {
+          answers.map((answer: any) => {
             return (
               <AnswerCard key={answer._id} answer={answer} userId={userId} />
             );

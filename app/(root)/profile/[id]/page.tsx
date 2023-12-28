@@ -25,7 +25,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
   //   { clerkId }
   // );
 
-  const result = await getUserInfo({ clerkId });
+  const result = await getUserInfo({ clerkId: params.id });
 
   // const isLoading = true;
   // if (isLoading) {
@@ -105,6 +105,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="top-posts">
+            {/* @ts-ignore */}
             <QuestionTab
               searchParams={searchParams}
               userId={result?.user._id}
@@ -112,6 +113,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
             />
           </TabsContent>
           <TabsContent value="answers">
+            {/* @ts-ignore */}
             <AnswerTab
               searchParams={searchParams}
               userId={result?.user._id}

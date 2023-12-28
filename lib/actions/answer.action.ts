@@ -90,6 +90,22 @@ export const getAnswers = async (params: GetAnswersParams) => {
 
     const hasNext = answersCount > skip + answers.length;
 
+    /* 
+    {
+    _id: string;
+    author: {
+        _id: string;
+        clerkId: string;
+        name: string;
+        picture: string;
+    };
+    content: string;
+    upvotes: Object[];
+    downvotes: Object[];
+    createdAt: Date;
+}
+*/
+
     return { answers, hasNext };
   } catch (err) {
     console.log('error in retrieving answer: ', err);

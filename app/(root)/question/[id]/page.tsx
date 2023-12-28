@@ -42,6 +42,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
             </p>
           </Link>
           <div className="flex justify-end">
+            {/* @ts-ignore */}
             <Votes
               type="question"
               itemId={JSON.stringify(question._id)}
@@ -97,7 +98,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
           );
         })}
       </div>
-
+      {/* @ts-ignore */}
       <AllAnswers
         questionId={question._id}
         userId={user._id}

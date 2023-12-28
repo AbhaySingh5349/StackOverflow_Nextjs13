@@ -10,18 +10,18 @@ interface Props extends SearchParamsProps {
 }
 
 const QuestionTab = async ({ searchParams, userId, clerkId }: Props) => {
-  const { questions, questionsCount, hasNext } = await getUserQuestions({
+  const result = await getUserQuestions({
     userId,
     page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
     <>
-      {questions?.map((question: any) => {
+      {result?.questions?.map((question: any) => {
         return (
           <QuestionCard
             key={question._id}
-            clerkId={clerkId}
+            clerkId={clerkId!}
             _id={question._id}
             title={question.title}
             tags={question.tags}
@@ -37,7 +37,7 @@ const QuestionTab = async ({ searchParams, userId, clerkId }: Props) => {
       <div className="mt-8">
         <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}
-          hasNext={hasNext}
+          hasNext={result?.hasNext!}
         />
       </div>
     </>
