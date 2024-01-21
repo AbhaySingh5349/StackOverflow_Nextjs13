@@ -8,6 +8,8 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+/* layer is a directive that help to write CSS for certain scope */
+/* apply is a directive that help to call classes provided by tailwind */
 @layer utilities {
   .flex-center {
     @apply flex justify-center items-center;

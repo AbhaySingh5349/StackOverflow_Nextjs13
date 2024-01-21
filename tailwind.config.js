@@ -75,5 +75,6 @@ module.exports = {
       },
     },
   },
+  // plugins are JS functions that help to write css by JS
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 };
