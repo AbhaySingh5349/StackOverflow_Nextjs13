@@ -29,7 +29,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
           route="/tags"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
-          placeholder="Search for amazing minds"
+          placeholder="Search for tags"
           otherClasses="flex-1"
         />
         <Filter
